@@ -1,70 +1,50 @@
 #include<iostream>
+#include<vector>
+#include<stack>
 #include<queue>
-
-
+#include<algorithm>
 using namespace std;
-
-int line[1001][1001];
-int visited[1001];
-int n, m, v;
-queue<int> q;
-void dfs(int idx) {
-    cout << idx << ' ';
-
-    for (int i = 1; i <= n; i++) {
-        if (line[idx][i] && !visited[i])
-        {
-            visited[i] = 1;
-            dfs(i);
+int n,m,k,a,b;
+vector<int> adj[10001];
+bool visited[1001] = {false,};
+bool visited_b[1001] = {false,};
+void dfs(int v){
+    visited[v] = true;
+    cout << v << " ";
+    for(int next : adj[v]){
+        if(!visited[next]){
+            dfs(next);
         }
     }
-
-
 }
-void bfs(int idx) {
-
-    q.push(idx);
-
-    while (!q.empty()) {
-
-        idx = q.front();
-
+void bfs(int v){
+    queue<int> q;
+    visited_b[v] = true;
+    q.push(v);
+    while(!q.empty()){
+        int front = q.front();
         q.pop();
-
-        cout << idx << ' ';
-
-        for (int i = 1; i <= n; i++) {
-            if (line[idx][i] && !visited[i]) {
-                q.push(i);
-                visited[i] = 1;
+        cout << front << " ";
+        for(int next:adj[front]){
+            if(!visited_b[next]){
+                visited_b[next] = true;
+                q.push(next);
             }
         }
-
-
-    } 
-
-
-}
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
-
-    cin >> n >> m >> v;
-
-
-    for (int i = 0; i < m; i++) {
-        int from, to;
-        cin >> from >> to;
-        line[from][to] = 1;
-        line[to][from] = 1;
     }
-    visited[v] = 1;
-    dfs(v);
+}
 
-    cout << '\n';
-    fill_n(visited, 1001, 0);
-    visited[v] = 1;
-    bfs(v);
-    return 0;
+int main(){
+    cin >> n >> m >> k;
+    for(int i = 0; i < m; i++){
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    for(int i = 1; i <= n; i++){
+        sort(adj[i].begin(), adj[i].end());
+    }
+    dfs(k);
+    cout << "\n";
+    bfs(k);
 }
